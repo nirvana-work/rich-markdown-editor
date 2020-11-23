@@ -97,6 +97,7 @@ export type Props = {
   onSave?: ({ done: boolean }) => void;
   onCancel?: () => void;
   onChange: (value: () => string) => void;
+  onStateChange: (value: () => any) => void;
   onImageUploadStart?: () => void;
   onImageUploadStop?: () => void;
   onCreateLink?: (title: string) => Promise<string>;
@@ -408,7 +409,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
         (step: Step) =>
           step.slice.content.firstChild &&
           step.slice.content.firstChild.type.name ===
-            this.schema.nodes.checkbox_item.name
+          this.schema.nodes.checkbox_item.name
       );
     };
 
@@ -459,16 +460,26 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
     }
   }
 
+  editorState = (): any => {
+    return this.view.state;
+  }
+
   value = (): string => {
     return this.serializer.serialize(this.view.state.doc);
   };
 
   handleChange = () => {
-    if (!this.props.onChange) return;
+    if (this.props.onChange) {
+      this.props.onChange(() => {
+        return this.value();
+      });
+    }
 
-    this.props.onChange(() => {
-      return this.value();
-    });
+    if (this.props.onStateChange) {
+      this.props.onStateChange(() => {
+        return this.editorState();
+      });
+    }
   };
 
   handleSave = () => {
@@ -643,7 +654,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
   };
 }
 
-const StyledEditor = styled("div")<{
+const StyledEditor = styled("div") <{
   readOnly?: boolean;
   readOnlyWriteCheckboxes?: boolean;
 }>`
@@ -903,7 +914,7 @@ const StyledEditor = styled("div")<{
     &:hover {
       border-bottom: 1px dotted
         ${props =>
-          props.readOnly ? props.theme.placeholder : props.theme.textSecondary};
+    props.readOnly ? props.theme.placeholder : props.theme.textSecondary};
     }
   }
 
@@ -956,9 +967,9 @@ const StyledEditor = styled("div")<{
 
   ul.checkbox_list li input {
     pointer-events: ${props =>
-      props.readOnly && !props.readOnlyWriteCheckboxes ? "none" : "initial"};
+    props.readOnly && !props.readOnlyWriteCheckboxes ? "none" : "initial"};
     opacity: ${props =>
-      props.readOnly && !props.readOnlyWriteCheckboxes ? 0.75 : 1};
+    props.readOnly && !props.readOnlyWriteCheckboxes ? 0.75 : 1};
     margin: 0 0.5em 0 0;
     width: 14px;
     height: 14px;
@@ -1188,7 +1199,7 @@ const StyledEditor = styled("div")<{
 
     .selectedCell {
       background: ${props =>
-        props.readOnly ? "inherit" : props.theme.tableSelectedBackground};
+    props.readOnly ? "inherit" : props.theme.tableSelectedBackground};
 
       /* fixes Firefox background color painting over border:
        * https://bugzilla.mozilla.org/show_bug.cgi?id=688556 */
