@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "copy-to-clipboard": "^3.0.8",
+    "css-loader": "^4.2.1",
     "lodash": "^4.17.11",
     "markdown-it-container": "^3.0.0",
     "outline-icons": "^1.21.0",
@@ -43,6 +44,7 @@
     "resize-observer-polyfill": "^1.5.1",
     "slugify": "^1.4.0",
     "smooth-scroll-into-view-if-needed": "^1.1.27",
+    "style-loader": "^1.2.1",
     "typescript": "3.7.5"
   },
   "peerDependencies": {
