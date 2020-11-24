@@ -50,6 +50,15 @@ const docSearchResults = [
   },
 ];
 
+const desc = [{ "type": "paragraph", "content": [{ "type": "text", "text": "Handle intermediate and error states." }] }]
+
+const getDoc = () => {
+  return {
+    type: "doc",
+    content: desc
+  }
+}
+
 class YoutubeEmbed extends React.Component {
   render() {
     const { attrs } = this.props;
@@ -129,7 +138,8 @@ class Example extends React.Component {
           readOnlyWriteCheckboxes
           value={this.state.value}
           template={this.state.template}
-          defaultValue={defaultValue}
+          jsonValue={getDoc()}
+          // defaultValue={defaultValue}
           scrollTo={window.location.hash}
           handleDOMEvents={{
             focus: () => console.log("FOCUS"),

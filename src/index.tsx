@@ -1,6 +1,7 @@
 /* global window File Promise */
 import * as React from "react";
 import memoize from "lodash/memoize";
+import { Node as ProsemirrorNode } from "prosemirror-model";
 import { EditorState, Selection, Plugin } from "prosemirror-state";
 import { dropCursor } from "prosemirror-dropcursor";
 import { gapCursor } from "prosemirror-gapcursor";
@@ -78,7 +79,7 @@ export const theme = lightTheme;
 export type Props = {
   id?: string;
   value?: string;
-  jsonValue?: string;
+  jsonValue?: any;
   defaultValue: string;
   placeholder: string;
   extensions: Extension[];
@@ -186,7 +187,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
     }
 
     if (this.props.jsonValue && prevProps.jsonValue !== this.props.jsonValue) {
-      const newState = this.createStateFromDoc(this.props.jsonValue);
+      const newState = this.createStateFromDoc(ProsemirrorNode.fromJSON(this.schema, this.props.jsonValue));
       this.view.updateState(newState);
     }
 
@@ -388,7 +389,15 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
     return this.createStateFromDoc(doc);
   }
 
-  createStateFromDoc(doc) {
+  createInitialState() {
+    const doc = this.props.jsonValue ?
+      ProsemirrorNode.fromJSON(this.schema, this.props.jsonValue) :
+      this.createDocument(this.props.value || this.props.defaultValue);
+
+    return this.createStateFromDoc(doc);
+  }
+
+  createStateFromDoc(doc: ProsemirrorNode) {
     return EditorState.create({
       schema: this.schema,
       doc,
@@ -424,7 +433,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
     };
 
     const view = new EditorView(this.element, {
-      state: this.createState(),
+      state: this.createInitialState(),
       editable: () => !this.props.readOnly,
       nodeViews: this.nodeViews,
       handleDOMEvents: this.props.handleDOMEvents,
