@@ -78,6 +78,7 @@ export const theme = lightTheme;
 export type Props = {
   id?: string;
   value?: string;
+  jsonValue?: string;
   defaultValue: string;
   placeholder: string;
   extensions: Extension[];
@@ -181,6 +182,11 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
     // Allow changes to the 'value' prop to update the editor from outside
     if (this.props.value && prevProps.value !== this.props.value) {
       const newState = this.createState(this.props.value);
+      this.view.updateState(newState);
+    }
+
+    if (this.props.jsonValue && prevProps.jsonValue !== this.props.jsonValue) {
+      const newState = this.createStateFromDoc(this.props.jsonValue);
       this.view.updateState(newState);
     }
 
@@ -379,6 +385,10 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
   createState(value?: string) {
     const doc = this.createDocument(value || this.props.defaultValue);
 
+    return this.createStateFromDoc(doc);
+  }
+
+  createStateFromDoc(doc) {
     return EditorState.create({
       schema: this.schema,
       doc,
