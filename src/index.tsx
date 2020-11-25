@@ -73,6 +73,8 @@ import MarkdownPaste from "./plugins/MarkdownPaste";
 export { schema, parser, serializer } from "./server";
 
 export { default as Extension } from "./lib/Extension";
+export { default as OutlineNode } from "./nodes/Node"
+export { default as OutlineMark } from "./marks/Mark"
 
 export const theme = lightTheme;
 

@@ -75,6 +75,10 @@ exports.parser = server_1.parser;
 exports.serializer = server_1.serializer;
 var Extension_1 = require("./lib/Extension");
 exports.Extension = Extension_1.default;
+var Node_1 = require("./nodes/Node");
+exports.OutlineNode = Node_1.default;
+var Mark_1 = require("./marks/Mark");
+exports.OutlineMark = Mark_1.default;
 exports.theme = theme_1.light;
 class RichMarkdownEditor extends React.PureComponent {
     constructor() {

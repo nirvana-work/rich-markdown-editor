@@ -26,6 +26,8 @@ import ExtensionManager from "./lib/ExtensionManager";
 import ComponentView from "./lib/ComponentView";
 export { schema, parser, serializer } from "./server";
 export { default as Extension } from "./lib/Extension";
+export { default as OutlineNode } from "./nodes/Node";
+export { default as OutlineMark } from "./marks/Mark";
 export declare const theme: {
     background: string;
     text: string;
