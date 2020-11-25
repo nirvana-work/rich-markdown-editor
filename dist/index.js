@@ -12,11 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(require("react"));
 const memoize_1 = __importDefault(require("lodash/memoize"));
+const prosemirror_model_1 = require("prosemirror-model");
 const prosemirror_state_1 = require("prosemirror-state");
 const prosemirror_dropcursor_1 = require("prosemirror-dropcursor");
 const prosemirror_gapcursor_1 = require("prosemirror-gapcursor");
 const prosemirror_view_1 = require("prosemirror-view");
-const prosemirror_model_1 = require("prosemirror-model");
+const prosemirror_model_2 = require("prosemirror-model");
 const prosemirror_inputrules_1 = require("prosemirror-inputrules");
 const prosemirror_keymap_1 = require("prosemirror-keymap");
 const prosemirror_commands_1 = require("prosemirror-commands");
@@ -204,6 +205,10 @@ class RichMarkdownEditor extends React.PureComponent {
             const newState = this.createState(this.props.value);
             this.view.updateState(newState);
         }
+        if (this.props.jsonValue && prevProps.jsonValue !== this.props.jsonValue) {
+            const newState = this.createStateFromDoc(prosemirror_model_1.Node.fromJSON(this.schema, this.props.jsonValue));
+            this.view.updateState(newState);
+        }
         if (prevProps.readOnly !== this.props.readOnly) {
             this.view.update(Object.assign(Object.assign({}, this.view.props), { editable: () => !this.props.readOnly }));
         }
@@ -353,7 +358,7 @@ class RichMarkdownEditor extends React.PureComponent {
         return this.extensions.marks;
     }
     createSchema() {
-        return new prosemirror_model_1.Schema({
+        return new prosemirror_model_2.Schema({
             nodes: this.nodes,
             marks: this.marks,
         });
@@ -368,6 +373,15 @@ class RichMarkdownEditor extends React.PureComponent {
     }
     createState(value) {
         const doc = this.createDocument(value || this.props.defaultValue);
+        return this.createStateFromDoc(doc);
+    }
+    createInitialState() {
+        const doc = this.props.jsonValue ?
+            prosemirror_model_1.Node.fromJSON(this.schema, this.props.jsonValue) :
+            this.createDocument(this.props.value || this.props.defaultValue);
+        return this.createStateFromDoc(doc);
+    }
+    createStateFromDoc(doc) {
         return prosemirror_state_1.EditorState.create({
             schema: this.schema,
             doc,
@@ -396,7 +410,7 @@ class RichMarkdownEditor extends React.PureComponent {
                     this.schema.nodes.checkbox_item.name);
         };
         const view = new prosemirror_view_1.EditorView(this.element, {
-            state: this.createState(),
+            state: this.createInitialState(),
             editable: () => !this.props.readOnly,
             nodeViews: this.nodeViews,
             handleDOMEvents: this.props.handleDOMEvents,

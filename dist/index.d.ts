@@ -11,6 +11,7 @@
 /// <reference types="lodash/common/string" />
 /// <reference types="lodash/common/util" />
 import * as React from "react";
+import { Node as ProsemirrorNode } from "prosemirror-model";
 import { EditorState, Plugin } from "prosemirror-state";
 import { MarkdownParser, MarkdownSerializer } from "prosemirror-markdown";
 import { EditorView } from "prosemirror-view";
@@ -99,6 +100,7 @@ export declare const theme: {
 export declare type Props = {
     id?: string;
     value?: string;
+    jsonValue?: any;
     defaultValue: string;
     placeholder: string;
     extensions: Extension[];
@@ -190,7 +192,9 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
     createSerializer(): import("./lib/markdown/serializer").MarkdownSerializer;
     createParser(): MarkdownParser<any>;
     createState(value?: string): EditorState<any>;
-    createDocument(content: string): import("prosemirror-model").Node<any>;
+    createInitialState(): EditorState<any>;
+    createStateFromDoc(doc: ProsemirrorNode): EditorState<any>;
+    createDocument(content: string): ProsemirrorNode<any>;
     createView(): EditorView<any>;
     scrollToAnchor(hash: string): void;
     editorState: () => any;

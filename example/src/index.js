@@ -136,7 +136,7 @@ class Example extends React.Component {
           id="example"
           readOnly={this.state.readOnly}
           readOnlyWriteCheckboxes
-          value={this.state.value}
+          // value={this.state.value}
           template={this.state.template}
           jsonValue={getDoc()}
           // defaultValue={defaultValue}
