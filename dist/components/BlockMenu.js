@@ -41,7 +41,7 @@ class BlockMenu extends React.Component {
         this.inputRef = React.createRef();
         this.state = {
             left: -1000,
-            top: 0,
+            top: 1,
             bottom: undefined,
             isAbove: false,
             selectedIndex: 0,
