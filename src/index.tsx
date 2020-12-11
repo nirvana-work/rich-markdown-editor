@@ -1,6 +1,7 @@
 /* global window File Promise */
 import * as React from "react";
 import memoize from "lodash/memoize";
+import { Node as ProsemirrorNode } from "prosemirror-model";
 import { EditorState, Selection, Plugin } from "prosemirror-state";
 import { dropCursor } from "prosemirror-dropcursor";
 import { gapCursor } from "prosemirror-gapcursor";
@@ -72,12 +73,15 @@ import MarkdownPaste from "./plugins/MarkdownPaste";
 export { schema, parser, serializer } from "./server";
 
 export { default as Extension } from "./lib/Extension";
+export { default as OutlineNode } from "./nodes/Node"
+export { default as OutlineMark } from "./marks/Mark"
 
 export const theme = lightTheme;
 
 export type Props = {
   id?: string;
   value?: string;
+  jsonValue?: any;
   defaultValue: string;
   placeholder: string;
   extensions: Extension[];
@@ -97,6 +101,7 @@ export type Props = {
   onSave?: ({ done: boolean }) => void;
   onCancel?: () => void;
   onChange: (value: () => string) => void;
+  onStateChange: (value: () => any) => void;
   onImageUploadStart?: () => void;
   onImageUploadStop?: () => void;
   onCreateLink?: (title: string) => Promise<string>;
@@ -180,6 +185,11 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
     // Allow changes to the 'value' prop to update the editor from outside
     if (this.props.value && prevProps.value !== this.props.value) {
       const newState = this.createState(this.props.value);
+      this.view.updateState(newState);
+    }
+
+    if (this.props.jsonValue && prevProps.jsonValue !== this.props.jsonValue) {
+      const newState = this.createStateFromDoc(ProsemirrorNode.fromJSON(this.schema, this.props.jsonValue));
       this.view.updateState(newState);
     }
 
@@ -378,6 +388,18 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
   createState(value?: string) {
     const doc = this.createDocument(value || this.props.defaultValue);
 
+    return this.createStateFromDoc(doc);
+  }
+
+  createInitialState() {
+    const doc = this.props.jsonValue ?
+      ProsemirrorNode.fromJSON(this.schema, this.props.jsonValue) :
+      this.createDocument(this.props.value || this.props.defaultValue);
+
+    return this.createStateFromDoc(doc);
+  }
+
+  createStateFromDoc(doc: ProsemirrorNode) {
     return EditorState.create({
       schema: this.schema,
       doc,
@@ -408,12 +430,12 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
         (step: Step) =>
           step.slice.content.firstChild &&
           step.slice.content.firstChild.type.name ===
-            this.schema.nodes.checkbox_item.name
+          this.schema.nodes.checkbox_item.name
       );
     };
 
     const view = new EditorView(this.element, {
-      state: this.createState(),
+      state: this.createInitialState(),
       editable: () => !this.props.readOnly,
       nodeViews: this.nodeViews,
       handleDOMEvents: this.props.handleDOMEvents,
@@ -459,16 +481,26 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
     }
   }
 
+  editorState = (): any => {
+    return this.view.state;
+  }
+
   value = (): string => {
     return this.serializer.serialize(this.view.state.doc);
   };
 
   handleChange = () => {
-    if (!this.props.onChange) return;
+    if (this.props.onChange) {
+      this.props.onChange(() => {
+        return this.value();
+      });
+    }
 
-    this.props.onChange(() => {
-      return this.value();
-    });
+    if (this.props.onStateChange) {
+      this.props.onStateChange(() => {
+        return this.editorState();
+      });
+    }
   };
 
   handleSave = () => {
@@ -643,7 +675,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
   };
 }
 
-const StyledEditor = styled("div")<{
+const StyledEditor = styled("div") <{
   readOnly?: boolean;
   readOnlyWriteCheckboxes?: boolean;
 }>`
@@ -903,7 +935,7 @@ const StyledEditor = styled("div")<{
     &:hover {
       border-bottom: 1px dotted
         ${props =>
-          props.readOnly ? props.theme.placeholder : props.theme.textSecondary};
+    props.readOnly ? props.theme.placeholder : props.theme.textSecondary};
     }
   }
 
@@ -956,9 +988,9 @@ const StyledEditor = styled("div")<{
 
   ul.checkbox_list li input {
     pointer-events: ${props =>
-      props.readOnly && !props.readOnlyWriteCheckboxes ? "none" : "initial"};
+    props.readOnly && !props.readOnlyWriteCheckboxes ? "none" : "initial"};
     opacity: ${props =>
-      props.readOnly && !props.readOnlyWriteCheckboxes ? 0.75 : 1};
+    props.readOnly && !props.readOnlyWriteCheckboxes ? 0.75 : 1};
     margin: 0 0.5em 0 0;
     width: 14px;
     height: 14px;
@@ -966,6 +998,7 @@ const StyledEditor = styled("div")<{
 
   li p:first-child {
     margin: 0;
+    word-break: break-all;
   }
 
   hr {
@@ -1188,7 +1221,7 @@ const StyledEditor = styled("div")<{
 
     .selectedCell {
       background: ${props =>
-        props.readOnly ? "inherit" : props.theme.tableSelectedBackground};
+    props.readOnly ? "inherit" : props.theme.tableSelectedBackground};
 
       /* fixes Firefox background color painting over border:
        * https://bugzilla.mozilla.org/show_bug.cgi?id=688556 */
