@@ -1,7 +1,7 @@
 {
   "name": "rich-markdown-editor",
   "description": "A rich text editor with Markdown shortcuts",
-  "version": "11.0.6",
+  "version": "11.0.7",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "license": "BSD-3-Clause",
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "copy-to-clipboard": "^3.0.8",
+    "css-loader": "^4.2.1",
     "lodash": "^4.17.11",
     "markdown-it-container": "^3.0.0",
     "outline-icons": "^1.21.0",
@@ -36,18 +37,19 @@
     "prosemirror-tables": "^1.1.1",
     "prosemirror-transform": "1.2.5",
     "prosemirror-utils": "^0.9.6",
-    "prosemirror-view": "^1.16.1",
     "react-medium-image-zoom": "^3.0.16",
     "react-portal": "^4.2.1",
     "refractor": "^3.1.0",
     "resize-observer-polyfill": "^1.5.1",
     "slugify": "^1.4.0",
     "smooth-scroll-into-view-if-needed": "^1.1.27",
+    "style-loader": "^1.2.1",
     "typescript": "3.7.5"
   },
   "peerDependencies": {
+    "prosemirror-view": "^1.16.1",
     "react": "^16.0.0 || ^17.0.0",
-    "react-dom": "^16.0.0 ^17.0.0",
+    "react-dom": "^16.0.0 || ^17.0.0",
     "styled-components": "^5.0.0"
   },
   "devDependencies": {
