@@ -22,6 +22,7 @@ exports.LANGUAGES = {
     powershell: "Powershell",
     python: "Python",
     ruby: "Ruby",
+    sql: "SQL",
     typescript: "TypeScript",
 };
 function getDecorations({ doc, name }) {
@@ -42,9 +43,7 @@ function getDecorations({ doc, name }) {
     blocks.forEach(block => {
         let startPos = block.pos + 1;
         const language = block.node.attrs.language;
-        if (!language ||
-            language === "none" ||
-            !Object.keys(exports.LANGUAGES).includes(language)) {
+        if (!language || language === "none" || !core_1.default.registered(language)) {
             return;
         }
         const nodes = core_1.default.highlight(block.node.textContent, language);

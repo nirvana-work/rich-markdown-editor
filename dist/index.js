@@ -776,7 +776,7 @@ const StyledEditor = styled_components_1.default("div") `
 
   li p:first-child {
     margin: 0;
-    word-break: break-all;
+    word-break: break-word;
   }
 
   hr {

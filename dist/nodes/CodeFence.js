@@ -23,6 +23,7 @@ const php_1 = __importDefault(require("refractor/lang/php"));
 const python_1 = __importDefault(require("refractor/lang/python"));
 const powershell_1 = __importDefault(require("refractor/lang/powershell"));
 const ruby_1 = __importDefault(require("refractor/lang/ruby"));
+const sql_1 = __importDefault(require("refractor/lang/sql"));
 const typescript_1 = __importDefault(require("refractor/lang/typescript"));
 const prosemirror_commands_1 = require("prosemirror-commands");
 const prosemirror_inputrules_1 = require("prosemirror-inputrules");
@@ -43,6 +44,7 @@ const types_1 = require("../types");
     python_1.default,
     powershell_1.default,
     ruby_1.default,
+    sql_1.default,
     typescript_1.default,
 ].forEach(core_1.default.register);
 class CodeFence extends Node_1.default {

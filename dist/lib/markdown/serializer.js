@@ -189,6 +189,7 @@ class MarkdownSerializerState {
         let headerBuffer = "";
         const prevTable = this.inTable;
         this.inTable = true;
+        this.out += "\n";
         node.forEach((row, _, i) => {
             if (headerBuffer) {
                 this.out += `${headerBuffer}|\n`;

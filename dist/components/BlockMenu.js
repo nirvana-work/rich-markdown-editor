@@ -41,7 +41,7 @@ class BlockMenu extends React.Component {
         this.inputRef = React.createRef();
         this.state = {
             left: -1000,
-            top: 1,
+            top: 0,
             bottom: undefined,
             isAbove: false,
             selectedIndex: 0,
@@ -373,8 +373,8 @@ exports.Wrapper = styled_components_1.default.div `
   z-index: ${props => {
     return props.theme.zIndex + 100;
 }};
-  ${props => props.top && `top: ${props.top}px`};
-  ${props => props.bottom && `bottom: ${props.bottom}px`};
+  ${props => props.top !== undefined && `top: ${props.top}px`};
+  ${props => props.bottom !== undefined && `bottom: ${props.bottom}px`};
   left: ${props => props.left}px;
   background-color: ${props => props.theme.blockToolbarBackground};
   border-radius: 4px;

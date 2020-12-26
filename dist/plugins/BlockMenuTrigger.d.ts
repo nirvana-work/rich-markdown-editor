@@ -1,5 +1,5 @@
-import { Plugin } from "prosemirror-state";
 import { InputRule } from "prosemirror-inputrules";
+import { Plugin } from "prosemirror-state";
 import Extension from "../lib/Extension";
 export default class BlockMenuTrigger extends Extension {
     get name(): string;

@@ -13,6 +13,7 @@ export declare const LANGUAGES: {
     powershell: string;
     python: string;
     ruby: string;
+    sql: string;
     typescript: string;
 };
 export default function Prism({ name, deferred }: {

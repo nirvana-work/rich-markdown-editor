@@ -1,4 +1,4 @@
-/// <reference types="react" />
+import * as React from "react";
 import Node from "./Node";
 export default class Embed extends Node {
     get name(): string;
@@ -13,6 +13,15 @@ export default class Embed extends Node {
         };
         parseDOM: {
             tag: string;
+            getAttrs: (dom: HTMLIFrameElement) => {
+                href: string;
+                component: typeof React.Component | React.FC<any>;
+                matches: true | [];
+            } | {
+                href?: undefined;
+                component?: undefined;
+                matches?: undefined;
+            };
         }[];
         toDOM: (node: any) => (string | number | {
             src: any;
